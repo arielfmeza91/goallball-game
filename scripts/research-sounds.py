@@ -33,3 +33,7 @@ Path("sound-research.json").write_text(json.dumps(results, ensure_ascii=False, i
 import os
 with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as stream:
     stream.write("## Búsqueda de sonidos reutilizables\n```json\n" + json.dumps(results, ensure_ascii=False, indent=2) + "\n```\n")
+
+for result in results:
+    safe = json.dumps(result, ensure_ascii=False).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+    print("::notice title=Fuente de audio y licencia::" + safe)
