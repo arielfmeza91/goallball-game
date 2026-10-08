@@ -7,7 +7,8 @@ internal static class Program
     {
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("es-ES");
         CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("es-ES");
-        if (args.Contains("--verificar")) return Diagnostics.Run();
+        if (args.Length == 2 && args[0] == "--preparar-audio") return RecordedAudio.Prepare(args[1]);
+        if (args.Contains("--verificar")) { ApplicationConfiguration.Initialize(); return Diagnostics.Run(); }
         ApplicationConfiguration.Initialize(); Application.Run(new GameWindow()); return 0;
     }
 }

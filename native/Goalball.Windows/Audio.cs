@@ -1,5 +1,6 @@
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using Goalball.Core;
 namespace Goalball.Windows;
 public sealed class GameAudio : IDisposable
 {
@@ -7,9 +8,11 @@ public sealed class GameAudio : IDisposable
     private readonly MixingSampleProvider mixer = new(WaveFormat.CreateIeeeFloatWaveFormat(44100, 2)) { ReadFully = true };
     private readonly Dictionary<string, float[]> samples = new();
     public float Volume = .7f;
+    private RollingAudio? rolling;
+    private RollingAudio? floor;
     public GameAudio()
     {
-        foreach (string name in new[] { "bell", "throw", "dive", "save", "goal", "whistle" })
+        foreach (string name in new[] { "bell", "rolling", "throw", "dive", "save", "goal", "whistle" })
         {
             using var reader = new AudioFileReader(Path.Combine(AppContext.BaseDirectory, "sonidos", name + ".wav"));
             var data = new List<float>(); var buffer = new float[4096]; int count;
@@ -24,8 +27,27 @@ public sealed class GameAudio : IDisposable
     {
         if (samples.TryGetValue(name, out var data)) mixer.AddMixerInput(new PannedSample(data, Math.Clamp(pan, -1, 1), gain * Volume));
     }
-    public void StopEffects() => mixer.RemoveAllMixerInputs();
+    public void BallPosition(Ball? ball)
+    {
+        if (ball == null) { if (rolling != null) rolling.Active = false; if (floor != null) floor.Active = false; rolling = null; floor = null; return; }
+        if (rolling == null)
+        {
+            rolling = new RollingAudio(samples["bell"]);
+            rolling.Position(ball.X, ball.Y, ball.Speed, Volume);
+            mixer.AddMixerInput(new RollingProvider(rolling));
+            floor = new RollingAudio(samples["rolling"]);
+            floor.Position(ball.X, ball.Y, ball.Speed, Volume * .3);
+            mixer.AddMixerInput(new RollingProvider(floor));
+        }
+        else { rolling.Position(ball.X, ball.Y, ball.Speed, Volume); floor?.Position(ball.X, ball.Y, ball.Speed, Volume * .3); }
+    }
+    public void StopEffects() { if (rolling != null) rolling.Active = false; if (floor != null) floor.Active = false; rolling = null; floor = null; mixer.RemoveAllMixerInputs(); }
     public void Dispose() { output.Stop(); output.Dispose(); }
+    private sealed class RollingProvider(RollingAudio source) : ISampleProvider
+    {
+        public WaveFormat WaveFormat { get; } = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
+        public int Read(float[] buffer, int offset, int count) => source.Read(buffer, offset, count);
+    }
     private sealed class PannedSample(float[] samples, double pan, double gain) : ISampleProvider
     {
         private int position;

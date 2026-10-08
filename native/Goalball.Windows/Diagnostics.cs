@@ -13,7 +13,7 @@ internal static class Diagnostics
             var test = Marshal.GetDelegateForFunctionPointer<TestRunning>(NativeLibrary.GetExport(handle, "nvdaController_testIfRunning"));
             int result = test(); NativeLibrary.Free(handle);
             var report = new List<string> { "PASS: DLL oficial de NVDA cargada y funciones presentes.", $"NVDA testIfRunning = {result}. Cero significa NVDA abierto; no es necesario en el servidor de compilación." };
-            foreach (var name in new[] { "bell", "throw", "save", "dive", "goal", "whistle" })
+            foreach (var name in new[] { "bell", "rolling", "throw", "save", "dive", "goal", "whistle" })
             {
                 using var reader = new WaveFileReader(Path.Combine(AppContext.BaseDirectory, "sonidos", name + ".wav"));
                 if (reader.WaveFormat.SampleRate != 44100 || reader.Length == 0) throw new InvalidDataException(name);
@@ -21,6 +21,7 @@ internal static class Diagnostics
             }
             var match = new Match(); match.Start(); if (match.Phase != Phase.Play) throw new Exception("Inicio");
             report.Add("PASS: motor inicia partido.");
+            using (var window = new GameWindow()) report.Add(window.VerifyNativeMenu());
             File.WriteAllLines(Path.Combine(AppContext.BaseDirectory, "verificacion.txt"), report); return 0;
         }
         catch (Exception ex) { File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "verificacion.txt"), ex.ToString()); return 1; }

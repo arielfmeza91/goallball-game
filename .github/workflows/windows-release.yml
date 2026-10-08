@@ -1,7 +1,7 @@
 name: Goalball nativo Windows y NVDA
 on:
   push:
-    tags: ['v2*']
+    tags: ['v2*', 'v3*']
   workflow_dispatch:
 permissions:
   contents: write
@@ -20,32 +20,35 @@ jobs:
         run: |
           dotnet restore native/Goalball.Windows/Goalball.Windows.csproj -r win-x64 --locked-mode
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet publish native/Goalball.Windows/Goalball.Windows.csproj -c Release -r win-x64 --self-contained true --no-restore -o dist/GoalballSonoro-Nativo
+          dotnet publish native/Goalball.Windows/Goalball.Windows.csproj -c Release -r win-x64 --self-contained true --no-restore -o dist/Goalball-Nativo-NVDA-v3
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          Copy-Item LEEME.txt,LICENSE,SONIDOS-LICENCIA.txt dist/GoalballSonoro-Nativo/
-          Copy-Item native/NAUDIO-LICENCIA.txt dist/GoalballSonoro-Nativo/
+          Copy-Item LEEME.txt,LICENSE,SONIDOS-LICENCIA.txt dist/Goalball-Nativo-NVDA-v3/
+          Copy-Item native/NAUDIO-LICENCIA.txt dist/Goalball-Nativo-NVDA-v3/
       - name: Incluir cliente oficial de NVDA y verificar
         shell: pwsh
         run: |
           try {
-            ./scripts/Install-NvdaClient.ps1 -OutputDirectory dist/GoalballSonoro-Nativo
-            $verification = Start-Process -FilePath (Resolve-Path dist/GoalballSonoro-Nativo/GoalballSonoro.exe) -ArgumentList '--verificar' -Wait -PassThru
-            if ($verification.ExitCode -ne 0) { throw (Get-Content dist/GoalballSonoro-Nativo/verificacion.txt -Raw) }
+            ./scripts/Install-NvdaClient.ps1 -OutputDirectory dist/Goalball-Nativo-NVDA-v3
+            ./scripts/Download-RecordedAudio.ps1 -OutputDirectory dist/Goalball-Nativo-NVDA-v3/grabaciones-originales
+            $prepared = Start-Process -FilePath (Resolve-Path dist/Goalball-Nativo-NVDA-v3/GoalballNativoNVDA.exe) -ArgumentList '--preparar-audio', (Resolve-Path dist/Goalball-Nativo-NVDA-v3/grabaciones-originales).Path -Wait -PassThru
+            if ($prepared.ExitCode -ne 0) { throw (Get-Content dist/Goalball-Nativo-NVDA-v3/audio-error.txt -Raw) }
+            $verification = Start-Process -FilePath (Resolve-Path dist/Goalball-Nativo-NVDA-v3/GoalballNativoNVDA.exe) -ArgumentList '--verificar' -Wait -PassThru
+            if ($verification.ExitCode -ne 0) { throw (Get-Content dist/Goalball-Nativo-NVDA-v3/verificacion.txt -Raw) }
           } catch {
             $_ | Out-String | Add-Content $env:GITHUB_STEP_SUMMARY
             throw
           }
-          Get-Content dist/GoalballSonoro-Nativo/verificacion.txt
-          Compress-Archive -Path dist/GoalballSonoro-Nativo -DestinationPath Goalball-Nativo-Windows.zip
+          Get-Content dist/Goalball-Nativo-NVDA-v3/verificacion.txt
+          Compress-Archive -Path dist/Goalball-Nativo-NVDA-v3 -DestinationPath Goalball-Nativo-NVDA-Windows.zip
       - uses: actions/upload-artifact@v4
         with:
           name: Goalball-Nativo-Windows
-          path: Goalball-Nativo-Windows.zip
+          path: Goalball-Nativo-NVDA-Windows.zip
       - name: Publicar descarga al crear versión
         if: startsWith(github.ref, 'refs/tags/')
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$env:GITHUB_REF_NAME" Goalball-Nativo-Windows.zip --title "Goalball nativo y NVDA $env:GITHUB_REF_NAME" --notes "Aplicación nativa WinForms para Windows. Anuncios con NVDA Controller Client oficial. Extrae todo el ZIP y abre GoalballSonoro.exe con NVDA iniciado. Consulta LEEME.txt para controles, alcance y limitaciones."
+          gh release create "$env:GITHUB_REF_NAME" Goalball-Nativo-NVDA-Windows.zip --title "Goalball nativo y NVDA $env:GITHUB_REF_NAME" --notes "Aplicación nativa WinForms para Windows. Anuncios con NVDA Controller Client oficial. Extrae todo el ZIP y abre GoalballNativoNVDA.exe con NVDA iniciado. Menú clásico de Windows con lista nativa y grabaciones de balón/cascabeles CC BY 4.0. Consulta LEEME.txt para controles, créditos, alcance y limitaciones."
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

@@ -1,13 +1,13 @@
-GOALBALL SONORO 2.0 — WINDOWS NATIVO + NVDA
+GOALBALL NATIVO NVDA 3.0 — WINDOWS NATIVO + NVDA
 
 INICIAR
-Extrae TODO el ZIP y abre GoalballSonoro.exe con NVDA iniciado.
+Extrae TODO el ZIP y abre GoalballNativoNVDA.exe con NVDA iniciado.
 Windows 10/11 de 64 bits. No requiere navegador, Electron, Python, Node
 ni instalar .NET. El runtime de .NET se incluye en la carpeta.
 Conserva las DLL, las carpetas y sonidos junto al EXE.
 
 NVDA
-Los menús son controles nativos de Windows, navegables con Tab y Enter.
+Los menús son controles nativos de Windows, con menú principal de lista: flechas para elegir y Enter para aceptar.
 El partido envía las respuestas a tu NVDA con NVDA Controller Client oficial.
 Usa la voz, idioma y configuración que ya elegiste en NVDA.
 También envía los mensajes a la línea braille. No utiliza otra voz TTS.
@@ -18,7 +18,7 @@ Los anuncios de juego pueden desactivarse con V; los menús siguen siendo
 accesibles con NVDA. No se envían mensajes en la pantalla segura de Windows.
 
 CÓMO JUGAR
-Elige Nuevo partido o Entrenamiento en el menú nativo.
+Elige Nuevo partido o Entrenamiento en el menú clásico de Windows.
 En partido: 1 / 2 / 3 seleccionan defensor; flechas izquierda / derecha
 mueven lateralmente. Espacio lanza cuando tienes el balón, o bloquea
 cuando ataca el rival. A / D ajustan el destino del tiro; arriba / abajo
@@ -26,9 +26,9 @@ ajustan potencia. Usa auriculares estéreo para localizar el cascabel.
 La coordenada cero es tu izquierda; nueve metros, tu derecha.
 H: marcador, tiempo, posición, puntería, potencia y posesión con NVDA.
 M: antifaz, oculta pista. V: activar/desactivar anuncios de partido.
-Escape o P: pausa y menú nativo. Tab y Enter: opciones del menú.
+Escape o P: pausa y menú nativo. Flechas y Enter: opciones del menú.
 F1: manual accesible, con texto seleccionable y navegación de NVDA.
-F2: comprobar NVDA. F11: pantalla completa / ventana.
+F2: comprobar NVDA. F3: versión y tipo de aplicación. F11: pantalla completa / ventana.
 T: tiempo muerto. S: sustitución. Enter: continuar después del descanso.
 F5: arbitraje de entrenamiento, elige una falta y aplica el penalti.
 F6: alternar tiro legal, alto, largo y corto para practicar reglas.
@@ -64,8 +64,13 @@ consume el cupo y conserva habilidades/posiciones: no hay plantilla nominal.
 No hay lesiones, tiempos médicos, expulsiones, sanciones de competición,
 protestas, sorteo, inspección de material, ball-over, pases al exterior,
 lanzamiento prematuro ni multijugador. Alto/largo/corto se eligen con F6.
-El audio descargado son efectos CC0 a 44,1 kHz, no grabaciones deportivas
-profesionales. El cascabel usa coin.ogg; el silbato es síntesis original.
+El cascabel usa una grabación de Jingle Ball de alexyquest42; el fondo de
+rodamiento procede de Ball rolls and hits net 5.WAV de luminadii. Se usan
+vistas previas públicas HQ con licencia CC BY 4.0, convertidas y adaptadas.
+Son grabaciones de objetos y balones; no se afirma que sean de un balón oficial.
+El sonido es continuo, con panorama y distancia. El efecto de moneda ya
+no se usa para el balón. Otros efectos siguen siendo CC0 de Kenney.
+El silbato es síntesis original. Consulta GRABACIONES-CREDITOS.txt.
 El programa no está firmado con certificado comercial.
 
 LICENCIAS

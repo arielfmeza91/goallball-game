@@ -14,42 +14,71 @@ public sealed class GameWindow : Form
     private readonly System.Windows.Forms.Timer timer = new() { Interval = 16 };
     private readonly Stopwatch watch = Stopwatch.StartNew();
     private readonly HashSet<Keys> held = new();
-    private double lastTime, lastBell;
-    private bool warned, muteVoice, fullscreen, modal;
+    private double lastTime;
+    private bool warned, muteVoice, fullscreen, modal, resourcesDisposed;
     private FormWindowState previousState;
     private FormBorderStyle previousBorder;
-    private readonly Button resume = new() { Text = "&Continuar partido", AutoSize = true, ForeColor = SystemColors.ControlText };
+    private readonly ListBox choices = new() { AccessibleName = "Menú principal", Width = 420, Height = 230, IntegralHeight = false };
     public GameWindow()
     {
-        Text = "Goalball Sonoro — Windows nativo y NVDA"; ClientSize = new(1150, 760); MinimumSize = new(800, 580);
-        StartPosition = FormStartPosition.CenterScreen; BackColor = Color.FromArgb(9, 19, 30); ForeColor = Color.White;
-        Font = new Font("Segoe UI", 12); KeyPreview = true;
+        Text = "Goalball Nativo NVDA 3.0"; ClientSize = new(1150, 760); MinimumSize = new(800, 580);
+        StartPosition = FormStartPosition.CenterScreen; BackColor = SystemColors.Control; ForeColor = SystemColors.ControlText;
+        Font = SystemFonts.MessageBoxFont; KeyPreview = true;
         court = new Court(match) { Dock = DockStyle.Fill, AccessibleName = "Partido de goalball", AccessibleDescription = "F1 ayuda. Escape menú. H marcador. Espacio lanza o bloquea." };
         Controls.Add(court); Controls.Add(status); Controls.Add(menu);
-        var layout = new TableLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, ColumnCount = 1, Padding = new Padding(30) };
-        layout.Controls.Add(new Label { Text = "GOALBALL SONORO", AutoSize = true, Font = new Font("Segoe UI", 25, FontStyle.Bold), Margin = new Padding(0, 0, 0, 12) });
-        layout.Controls.Add(new Label { Text = "Windows nativo · Juego por teclado · Respuestas con NVDA", AutoSize = true, Margin = new Padding(0, 0, 0, 22) });
-        layout.Controls.Add(nvdaStatus);
-        resume.Click += (_, _) => Continue(); layout.Controls.Add(resume);
-        AddButton(layout, "&Nuevo partido", () => NewGame(false));
-        AddButton(layout, "&Entrenamiento", () => NewGame(true));
-        AddButton(layout, "&Opciones", ShowSettings);
-        AddButton(layout, "&Ayuda y controles", ShowHelp);
-        AddButton(layout, "&Comprobar NVDA (F2)", CheckNvda);
-        AddButton(layout, "&Salir", Close);
-        menu.Controls.Add(layout); menu.Resize += (_, _) => layout.Location = new(Math.Max(0, (menu.Width - layout.Width) / 2), Math.Max(0, (menu.Height - layout.Height) / 2));
-        resume.Visible = false;
-        Shown += (_, _) => { TryAudio(); timer.Start(); nvda.Speak("Goalball Sonoro. Menú principal. Usa Tab y Enter para elegir. Abre NVDA para escuchar las respuestas."); };
+        var layout = new TableLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, ColumnCount = 1, Padding = new Padding(20) };
+        layout.Controls.Add(new Label { Text = "Goalball Nativo NVDA 3.0", AutoSize = true, Font = new Font(Font.FontFamily, 16, FontStyle.Bold), Margin = new Padding(0, 0, 0, 12) });
+        layout.Controls.Add(new Label { Text = "Menú principal. Flechas para elegir; Enter para aceptar.", AutoSize = true, Margin = new Padding(0, 0, 0, 12) });
+        layout.Controls.Add(choices); layout.Controls.Add(nvdaStatus);
+        var choose = new Button { Text = "Aceptar", Width = 120, Height = 32, UseVisualStyleBackColor = true };
+        choose.Click += (_, _) => ChooseMenu(); layout.Controls.Add(choose); AcceptButton = choose;
+        choices.DoubleClick += (_, _) => ChooseMenu();
+        choices.KeyDown += (_, e) => { if (e.KeyCode == Keys.Enter) { e.Handled = true; ChooseMenu(); } };
+        menu.Controls.Add(layout);
+        void CenterMenu() => layout.Location = new(Math.Max(0, (menu.Width - layout.Width) / 2), Math.Max(0, (menu.Height - layout.Height) / 2));
+        menu.Resize += (_, _) => CenterMenu();
+        SetMenuChoices();
+        Shown += (_, _) => { CenterMenu(); choices.Focus(); TryAudio(); timer.Start(); nvda.Speak("Goalball nativo, versión tres. Menú principal. Flechas para elegir y Enter para aceptar."); };
         KeyDown += OnKeyDown; KeyUp += OnKeyUp;
         Deactivate += (_, _) => { held.Clear(); if (!menu.Visible && !modal) { match.Pause(); audio?.StopEffects(); ShowMenu(); Drain(); } };
-        FormClosed += (_, _) => { timer.Stop(); timer.Dispose(); audio?.Dispose(); nvda.Dispose(); };
         timer.Tick += (_, _) => TickGame();
     }
-    private static void AddButton(TableLayoutPanel layout, string text, Action action)
+    protected override void Dispose(bool disposing)
     {
-        var button = new Button { Text = text, AutoSize = true, ForeColor = SystemColors.ControlText, MinimumSize = new(360, 42), Margin = new Padding(0, 8, 0, 0), UseVisualStyleBackColor = true };
-        button.Click += (_, _) => action(); layout.Controls.Add(button);
+        if (disposing && !resourcesDisposed) { resourcesDisposed = true; timer.Stop(); timer.Dispose(); audio?.Dispose(); nvda.Dispose(); }
+        base.Dispose(disposing);
     }
+    internal string VerifyNativeMenu()
+    {
+        var className = new System.Text.StringBuilder(256);
+        if (GetClassName(choices.Handle, className, 256) == 0 || !className.ToString().Contains("LISTBOX", StringComparison.OrdinalIgnoreCase)) throw new Exception("No se creó la lista nativa de Windows.");
+        if (choices.AccessibilityObject.Role != AccessibleRole.List || choices.Items.Count != 7) throw new Exception("Menú accesible incorrecto.");
+        return "PASS: menú Windows nativo, clase " + className + ", rol accesible List, siete opciones.";
+    }
+    [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+    private static extern int GetClassName(IntPtr hwnd, System.Text.StringBuilder name, int max);
+    private void SetMenuChoices()
+    {
+        choices.Items.Clear();
+        if (match.Phase is Phase.Pause or Phase.Break) choices.Items.Add("Continuar partido");
+        choices.Items.AddRange(["Nuevo partido", "Entrenamiento", "Opciones", "Ayuda y controles", "Comprobar NVDA", "Acerca de esta versión", "Salir"]);
+        choices.SelectedIndex = 0;
+    }
+    private void ChooseMenu()
+    {
+        switch (choices.SelectedItem?.ToString())
+        {
+            case "Continuar partido": Continue(); break;
+            case "Nuevo partido": NewGame(false); break;
+            case "Entrenamiento": NewGame(true); break;
+            case "Opciones": ShowSettings(); choices.Focus(); break;
+            case "Ayuda y controles": ShowHelp(); choices.Focus(); break;
+            case "Comprobar NVDA": CheckNvda(); break;
+            case "Acerca de esta versión": ShowAbout(); break;
+            case "Salir": Close(); break;
+        }
+    }
+    private void ShowAbout() => MessageBox.Show(this, "Goalball Nativo NVDA 3.0\nAplicación Windows nativa: WinForms y GDI+.\nEjecutable: GoalballNativoNVDA.exe\nAnuncios mediante NVDA Controller Client.\nSin HTML, navegador, WebView ni Electron.", "Acerca de Goalball", MessageBoxButtons.OK, MessageBoxIcon.Information);
     private void TryAudio()
     {
         try { audio ??= new GameAudio(); }
@@ -59,16 +88,15 @@ public sealed class GameWindow : Form
     private void NewGame(bool practice)
     {
         if (audio == null) { TryAudio(); if (audio == null) return; }
-        match.Reset(practice); match.Start(); menu.Visible = false; status.Visible = true; court.Focus(); lastTime = watch.Elapsed.TotalSeconds; Drain();
+        match.Reset(practice); match.Start(); AcceptButton = null; menu.Visible = false; status.Visible = true; court.Focus(); lastTime = watch.Elapsed.TotalSeconds; Drain();
     }
     private void Continue()
     {
-        menu.Visible = false; match.Resume(); held.Clear(); court.Focus(); lastTime = watch.Elapsed.TotalSeconds; Drain();
+        AcceptButton = null; menu.Visible = false; match.Resume(); held.Clear(); court.Focus(); lastTime = watch.Elapsed.TotalSeconds; Drain();
     }
     private void ShowMenu()
     {
-        held.Clear(); resume.Visible = match.Phase == Phase.Pause || match.Phase == Phase.Break;
-        menu.Visible = true; menu.BringToFront(); if (resume.Visible) resume.Focus(); else menu.SelectNextControl(null, true, true, true, false);
+        held.Clear(); SetMenuChoices(); menu.Visible = true; menu.BringToFront(); choices.Focus();
     }
     private void CheckNvda() => nvda.Speak("NVDA conectado. Las respuestas del juego usan tu voz y configuración de NVDA.", true);
     private void Tell(string message, bool urgent = false) { status.Text = message; if (!muteVoice) nvda.Speak(message, urgent); }
@@ -84,16 +112,14 @@ public sealed class GameWindow : Form
         if (held.Contains(Keys.Left)) match.Move(-1, dt); if (held.Contains(Keys.Right)) match.Move(1, dt);
         if (held.Contains(Keys.A)) match.SetAim(match.Aim - dt * 4); if (held.Contains(Keys.D)) match.SetAim(match.Aim + dt * 4);
         match.Step(dt);
-        if (match.Phase == Phase.Play && match.Ball is { } b && now - lastBell > .16)
-        {
-            audio?.Play("bell", (b.X - 4.5) / 4.5, .12 + .42 * (1 - Math.Abs(b.Y - 2) / 18)); lastBell = now;
-        }
+        audio?.BallPosition(match.Phase == Phase.Play ? match.Ball : null);
         if (match.Phase == Phase.Play && match.Owner == 0 && match.Ball == null && match.Hold >= 7 && !warned) { Tell("Quedan tres segundos.", true); warned = true; }
         if (match.Hold < 1) warned = false;
         Drain(); court.Invalidate();
     }
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
+        if (e.KeyCode == Keys.F3) { if (!menu.Visible) { match.Pause(); ShowMenu(); } ShowAbout(); e.Handled = true; return; }
         if (e.KeyCode == Keys.F2) { CheckNvda(); e.Handled = true; return; }
         if (e.KeyCode == Keys.F11) { ToggleFullscreen(); e.Handled = true; return; }
         if (menu.Visible) return;
