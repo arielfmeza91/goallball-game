@@ -1,0 +1,19 @@
+Efectos descargados de Kenney. Licencia CC0 1.0 Universal:
+https://creativecommons.org/publicdomain/zero/1.0/
+Se redistribuyen sin exigir atribución; se incluye por transparencia.
+
+https://github.com/KenneyNL/Starter-Kit-FPS
+Commit: 185fd2326d74a5cf858cffc616f87cf9696f9cc0
+sounds/walking.ogg -> assets/throw.ogg
+sounds/land.ogg -> assets/save.ogg
+sounds/jump_a.ogg -> assets/dive.ogg
+README del autor: "Assets included in this package (2D sprites, 3D models
+and sound effects) are CC0 licensed".
+
+https://github.com/KenneyNL/Starter-Kit-3D-Platformer
+Commit: 3fa8a04b1c01ab23db43123d4ce814a34c3fc7f0
+sounds/coin.ogg -> assets/bell.ogg
+sounds/fall.ogg -> assets/goal.ogg
+El tono, volumen y paneo se adaptan en reproducción; archivos sin modificar.
+
+Silbato: síntesis original mediante Web Audio; sin recurso descargado.

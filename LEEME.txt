@@ -1,0 +1,73 @@
+GOALBALL SONORO 1.0 — WINDOWS 10 / 11, 64 BITS
+
+INICIAR
+Extrae TODO el ZIP en una carpeta. Abre GoalballSonoro.exe.
+No requiere instalación, Python, Node ni Internet para jugar.
+Conserva las carpetas y DLL junto al ejecutable.
+El programa no está firmado con un certificado comercial.
+
+CONTROLES
+Enter: empezar o continuar después del descanso.
+1 / 2 / 3: seleccionar uno de los tres defensores.
+Flechas izquierda / derecha: desplazamiento lateral.
+Espacio: bloquear si ataca el rival; lanzar si tienes el balón.
+A / D: apuntar a izquierda / derecha de la portería rival.
+Arriba / abajo: subir / bajar potencia.
+H: escuchar marcador, tiempo, posesión y defensor.
+M: activar antifaz; V: activar/desactivar voz; F1: ayuda hablada.
+P: pausa; T: tiempo muerto; S: sustitución.
+Para volver al juego después de usar un control con ratón, pulsa en la pista.
+Usa auriculares ESTÉREO. Tu izquierda es el canal izquierdo.
+Los sonidos del balón indican lado y distancia, no una dirección de movimiento.
+La narración usa las voces de Windows. Si falta español, instala una voz
+española desde Configuración > Hora e idioma > Voz. El sonido del juego
+no depende de esa voz. No hay reconocimiento de voz ni servicios en línea.
+
+MODOS
+Partido: rival controlado por ordenador, dos mitades de doce minutos.
+Entrenamiento: cinco minutos para aprender a localizar y detener el balón.
+Antifaz: oculta la pista, conserva marcador y controles accesibles.
+Arbitraje: menú para experimentar con faltas que no se deducen de un teclado.
+
+REGLAS IMPLEMENTADAS
+Pista 18 x 9 m; zonas de equipo, lanzamiento y zona neutral, tres jugadores
+por equipo y portería de nueve metros. Física del balón bidimensional simplificada.
+Dos mitades de doce minutos efectivos. Descanso de tres minutos, que se
+puede saltar con Enter. El reloj se detiene en pausa, descansos, tiempos
+muertos y penaltis. Se pausa automáticamente al perder foco la ventana.
+Diez goles de diferencia terminan el partido.
+Empate: dos mitades de tres minutos, gol de oro; después tres lanzamientos
+extra por equipo, terminando cuando la ventaja sea insalvable. Si persiste
+el empate, parejas alternadas de lanzamientos a muerte súbita.
+Diez segundos de posesión; excederlos concede penalti al rival.
+Un defensor durante penalti y lanzamientos extra.
+Balón alto y largo: penaltis. Balón corto y fuera: cambio de posesión.
+En tiro legal rodado se consideran efectuados los contactos reglamentarios.
+Cuatro tiempos muertos de 45 segundos y cuatro sustituciones por partido;
+máximo tres por mitad. Uno adicional de cada tipo para toda la prórroga.
+Faltas manuales: antifaces, defensa ilegal, ruido, retraso personal/de equipo,
+conducta antideportiva e instrucciones ilegales del banquillo.
+
+ALCANCE Y LIMITACIONES
+Es una primera versión de videojuego, NO una implementación completa ni
+certificada del reglamento IBSA. No se ha contrastado íntegramente con la
+edición vigente. No debe usarse para formación arbitral oficial.
+Los equipos tienen tres posiciones, pero no plantilla de seis jugadores;
+sustituir consume el cupo y conserva posiciones/habilidades. No hay lesiones,
+tiempos médicos, expulsiones, sanciones de competición, protesta arbitral,
+inspección de material, sorteo ni alineación nominal de lanzamientos extra.
+No se simulan el rebote de balón controlado hacia el campo contrario,
+ball-over, pases al exterior ni lanzamiento prematuro. No hay multijugador.
+Los contactos del balón se modelan en dos dimensiones: alto/largo/corto se
+seleccionan en el menú. El rival y los defensores no seleccionados tienen
+comportamiento simplificado. La identidad del defensor infractor en penalti
+no se fija: se permite elegir defensor con 1/2/3.
+Los efectos descargados son recursos de videojuegos a 44,1 kHz, no grabaciones
+profesionales de un balón oficial. El efecto de cascabel es una adaptación
+de coin.ogg. El silbato se sintetiza. No se promete audio deportivo realista.
+Las pruebas del motor y de interfaz se ejecutaron en Linux/Chromium; el
+paquete Windows se generó aquí, pero no se ejecutó en un Windows real.
+
+CRÉDITOS Y LICENCIAS
+Consulta SONIDOS-LICENCIA.txt. El código del juego se entrega con licencia MIT.
+Incluye Electron y sus licencias originales en LICENSE y LICENSES.chromium.html.

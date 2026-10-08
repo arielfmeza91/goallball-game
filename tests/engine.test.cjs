@@ -1,0 +1,13 @@
+const {test}=require('node:test'),assert=require('node:assert/strict');const {Match}=require('../engine.js');
+function play(){const m=new Match(()=>.99);m.start();return m;}
+test('partido reglamentario, pista y plantilla',()=>{const m=play();assert.equal(m.clock,720);assert.deepEqual(m.players[0],[1.5,4.5,7.5]);assert.equal(m.phase,'play');});
+test('diez segundos detiene el reloj y crea penalti',()=>{const m=play();for(let i=0;i<101;i++)m.step(.1);assert.match(m.penalty.reason,/diez/);assert.equal(m.owner,1);const c=m.clock;m.step(.1);assert.equal(m.clock,c);});
+test('alto y largo son penalti; corto cambia posesión',()=>{for(const s of ['high','long']){const m=play();m.throwBall(0,4.5,.6,s);assert.equal(m.penalty.offender,0);assert.equal(m.owner,1);}const m=play();m.throwBall(0,4.5,.6,'short');assert.equal(m.owner,1);assert.equal(m.penalty,null);});
+test('gol y límite de diez',()=>{const m=play();m.score=[9,0];m.throwBall(0,4.5,1);for(let i=0;i<30;i++)m.step(.1);assert.deepEqual(m.score,[10,0]);assert.equal(m.phase,'finished');});
+test('bloqueo activo detiene tiro rival',()=>{const m=play();m.owner=1;m.throwBall(1,4.5,.6);m.ball.y=2.2;m.ball.travel=13.8;m.dive();m.step(.1);assert.equal(m.score[1],0);assert.equal(m.owner,0);});
+test('fuera cambia posesión',()=>{const m=play();m.throwBall(0,10,1);for(let i=0;i<15;i++)m.step(.1);assert.equal(m.score[0],0);assert.equal(m.owner,1);});
+test('dos mitades, prórroga y gol de oro',()=>{const m=play();m.clock=.01;m.step(.1);assert.equal(m.period,2);assert.equal(m.phase,'break');m.resume();m.clock=.01;m.step(.1);assert.equal(m.period,3);assert.equal(m.clock,180);m.resume();m.throwBall(0,4.5,1);for(let i=0;i<30;i++)m.step(.1);assert.equal(m.phase,'finished');});
+test('tiempo muerto 45 segundos y máximo tres por mitad',()=>{const m=play();for(let n=0;n<3;n++){assert.equal(m.timeout(),true);const c=m.clock;while(m.phase==='timeout')m.step(.1);assert.equal(m.clock,c);}assert.equal(m.timeout(),false);});
+test('sustituciones limitadas y pausa congela partido',()=>{const m=play();for(let i=0;i<3;i++)assert.equal(m.substitute(),true);assert.equal(m.substitute(),false);m.pause();m.step(.1);assert.equal(m.clock,720);assert.equal(m.hold,0);});
+test('empate al final de prórroga inicia extra throws',()=>{const m=play();m.period=4;m.clock=.01;m.step(.1);assert.equal(m.period,5);assert.ok(m.penalty);assert.equal(m.owner,0);});
+test('lanzamientos extra alternan y se deciden tras ventaja insalvable',()=>{const m=play();m.period=5;m.clock=0;m.penalty={offender:1};for(let i=0;i<4;i++){const team=i%2;m.owner=team;m.throwBall(team,4.5);m.resolve(team===0);}assert.equal(m.phase,'finished');assert.deepEqual(m.shootCount,[2,2]);});

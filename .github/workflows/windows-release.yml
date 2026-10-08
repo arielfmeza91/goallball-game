@@ -1,0 +1,38 @@
+name: Juego para Windows
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Pruebas del motor
+        run: npm test
+      - name: Herramientas de empaquetado
+        run: npm install --prefix "$env:RUNNER_TEMP/goalball-tools" @electron/packager@19.0.1
+      - name: Crear juego portátil
+        shell: pwsh
+        run: |
+          & "$env:RUNNER_TEMP/goalball-tools/node_modules/.bin/electron-packager.cmd" . GoalballSonoro --platform=win32 --arch=x64 --electron-version=40.10.6 --out=dist --overwrite --asar
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Copy-Item LEEME.txt,SONIDOS-LICENCIA.txt dist/GoalballSonoro-win32-x64/
+          Compress-Archive -Path dist/GoalballSonoro-win32-x64 -DestinationPath Goalball-Windows.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Goalball-Windows
+          path: Goalball-Windows.zip
+      - name: Publicar descarga al crear versión
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$env:GITHUB_REF_NAME" Goalball-Windows.zip --title "Goalball Sonoro $env:GITHUB_REF_NAME" --notes "Primera versión jugable. Consulta LEEME.txt para controles, reglas implementadas y limitaciones."
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
