@@ -8,4 +8,8 @@
   </PropertyGroup>
   <ItemGroup><ProjectReference Include="../Goalball.Core/Goalball.Core.csproj"/><PackageReference Include="NAudio" Version="2.2.1"/></ItemGroup>
   <ItemGroup><Content Include="../../assets-native/*.wav" Link="sonidos/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/></ItemGroup>
+  <ItemGroup>
+    <Content Include="../../GRABACIONES-CREDITOS.txt" Link="GRABACIONES-CREDITOS.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/>
+    <Content Include="../../assets-recorded/*.mp3" Link="grabaciones-originales/%(Filename)%(Extension)" CopyToPublishDirectory="PreserveNewest"/>
+  </ItemGroup>
 </Project>

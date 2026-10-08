@@ -47,3 +47,7 @@ y copia los créditos al paquete. Se conservan los MP3 originales, URLs,
 autores, licencia y checksums. El sonido continuo usa RollingAudio con
 panorama, distancia y velocidad. No se presenta como grabación certificada
 de balón oficial. El menú usa ListBox estándar de Windows y colores del sistema.
+
+Los WAV convertidos y los MP3 descargados de la versión 3 también se conservan
+en assets-native y assets-recorded, con GRABACIONES-CREDITOS.txt. Así, el
+desarrollo y la publicación local disponen de las grabaciones sin red.

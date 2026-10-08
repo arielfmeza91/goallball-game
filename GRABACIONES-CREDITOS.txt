@@ -1,0 +1,14 @@
+Grabaciones descargadas de Freesound, vistas previas públicas de alta calidad.
+Licencia CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+Adaptaciones: conversión a WAV PCM 44,1 kHz; normalización, recorte y fundido para el juego.
+
+Jingle Ball — alexyquest42
+Fuente y licencia: https://freesound.org/people/alexyquest42/sounds/630469/
+Audio público HQ: https://cdn.freesound.org/previews/630/630469_11947021-hq.mp3
+SHA256 del MP3: 765B0C7871994F2BC71441940A34FBABB8727E1CA3B6436FBA97C5159DF155FE
+
+Ball rolls and hits net 5.WAV — luminadii
+Fuente y licencia: https://freesound.org/people/luminadii/sounds/343446/
+Audio público HQ: https://cdn.freesound.org/previews/343/343446_4040987-hq.mp3
+SHA256 del MP3: 63C5AF52967BE6A694277F68ABCB76362F93FC2AA96A7A76000CF0396C4058F5
+
