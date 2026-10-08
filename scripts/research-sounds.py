@@ -17,9 +17,9 @@ for query in ["goalball", "jingle ball", "small bells shaking"]:
             detail_url = "https://freesound.org" + link
             detail = get(detail_url)
             licenses = list(dict.fromkeys(re.findall(r"https?://creativecommons.org/[^\"'<> ]+", detail)))
-            previews = list(dict.fromkeys(re.findall(r"https?://[^\"'<> ]+(?:preview-hq|preview-lq)\.mp3", detail)))
+            previews = list(dict.fromkeys(re.findall(r"https?://[^\"'<> ]+(?:-hq|-lq)\.mp3", detail)))
             title = re.search(r"<title>(.*?)</title>", detail, re.S)
-            results.append({"query": query, "url": detail_url, "title": title.group(1).strip() if title else "", "license": licenses, "previews": previews})
+            results.append({"query": query, "url": detail_url, "title": title.group(1).strip() if title else "", "license": licenses, "previews": previews, "description": [x[:1600] for x in re.findall(r'<meta[^>]+name="description"[^>]+content="([^"]*)"', detail)]})
     except Exception as ex:
         results.append({"query": query, "error": str(ex)})
 
