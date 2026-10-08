@@ -4,7 +4,7 @@ on:
     branches: [main]
     paths: [scripts/research-sounds.py, .github/workflows/audio-research.yml]
 permissions:
-  contents: write
+  contents: read
 jobs:
   research:
     runs-on: ubuntu-latest
@@ -14,11 +14,3 @@ jobs:
         with:
           python-version: '3.12'
       - run: python scripts/research-sounds.py
-      - name: Guardar resultados sin credenciales
-        run: |
-          git switch -c audio-research-results-${GITHUB_RUN_ID}
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add sound-research.json
-          git commit -m "Record audio sources and license metadata"
-          git push origin HEAD
