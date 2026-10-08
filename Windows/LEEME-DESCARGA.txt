@@ -1,0 +1,5 @@
+Extrae TODO el ZIP de GitHub. Abre la carpeta Windows y haz doble clic en JUGAR.cmd.
+El lanzador une las seis partes, verifica SHA256, extrae el juego y lo abre.
+No requiere Internet ni instala programas. Windows 10/11 de 64 bits.
+Puedes abrir GoalballSonoro-win32-x64/GoalballSonoro.exe directamente tras el primer inicio.
+Lee LEEME.txt dentro de esa carpeta para controles y limitaciones.
