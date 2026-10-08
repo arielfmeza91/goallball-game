@@ -27,9 +27,14 @@ jobs:
       - name: Incluir cliente oficial de NVDA y verificar
         shell: pwsh
         run: |
-          ./scripts/Install-NvdaClient.ps1 -OutputDirectory dist/GoalballSonoro-Nativo
-          & dist/GoalballSonoro-Nativo/GoalballSonoro.exe --verificar
-          if ($LASTEXITCODE -ne 0) { Get-Content dist/GoalballSonoro-Nativo/verificacion.txt; exit $LASTEXITCODE }
+          try {
+            ./scripts/Install-NvdaClient.ps1 -OutputDirectory dist/GoalballSonoro-Nativo
+            $verification = Start-Process -FilePath (Resolve-Path dist/GoalballSonoro-Nativo/GoalballSonoro.exe) -ArgumentList '--verificar' -Wait -PassThru
+            if ($verification.ExitCode -ne 0) { throw (Get-Content dist/GoalballSonoro-Nativo/verificacion.txt -Raw) }
+          } catch {
+            $_ | Out-String | Add-Content $env:GITHUB_STEP_SUMMARY
+            throw
+          }
           Get-Content dist/GoalballSonoro-Nativo/verificacion.txt
           Compress-Archive -Path dist/GoalballSonoro-Nativo -DestinationPath Goalball-Nativo-Windows.zip
       - uses: actions/upload-artifact@v4

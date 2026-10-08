@@ -2,10 +2,7 @@ param([Parameter(Mandatory=$true)][string]$OutputDirectory)
 $ErrorActionPreference = 'Stop'
 # Solo distribución oficial de NV Access. No se usa una DLL de terceros.
 $base = 'https://download.nvaccess.org/releases/2026.2/'
-$page = Invoke-WebRequest -Uri $base
-$links = [regex]::Matches($page.Content, 'href=["'']([^"'']*controllerClient[^"'']*\.zip)["'']')
-if ($links.Count -ne 1) { throw "No se encontró una única distribución oficial de NVDA Controller Client 2026.2." }
-$uri = [Uri]::new([Uri]$base, $links[0].Groups[1].Value)
+$uri = [Uri]($base + 'nvda_2026.2_controllerClient.zip')
 if ($uri.Scheme -ne 'https' -or $uri.Host -ne 'download.nvaccess.org') { throw 'Destino de descarga inesperado.' }
 $work = Join-Path $env:RUNNER_TEMP 'goalball-nvda-client'
 New-Item -ItemType Directory -Force $work | Out-Null
