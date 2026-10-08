@@ -1,32 +1,39 @@
-# Goalball Sonoro
+# Goalball Sonoro — Windows nativo + NVDA
 
-Juego local de goalball para Windows 10/11 x64, con sonido espacial, narración
-española y rival automático. Lee `LEEME.txt` para controles, reglas implementadas
-y limitaciones. No es una simulación completa ni certificada del reglamento IBSA.
+Aplicación C# WinForms (.NET 10). Menú nativo y pista con GDI+; no hay HTML,
+WebView ni Electron. Audio estéreo con NAudio y WAV locales. Anuncios de
+partido y braille mediante NVDA Controller Client oficial, sin otro TTS.
+Consulta `LEEME.txt` para controles y alcance de las reglas.
 
-## Desarrollo
+## Pruebas y compilación
 
-No hay dependencias en el motor: `npm test` ejecuta sus pruebas con Node 24.
-Para probar en navegador, desde este directorio:
-
-```sh
-python -m http.server 8765 --bind 127.0.0.1
-```
-
-El servidor es para uso local de desarrollo. Los cinco archivos de audio están
-incluidos y tienen licencia CC0 (véase `SONIDOS-LICENCIA.txt`).
-
-## Generar Windows desde Linux
-
-Las herramientas se instalan fuera del checkout. No requieren modificar la
-aplicación ni descargar de nuevo sus sonidos.
+SDK fijado en `global.json` a 10.0.100. Usa el checkout existente; no hace falta
+crear otro worktree. Desde la raíz:
 
 ```sh
-npm --cache /tmp/goalball-npm-cache install --prefix /workspace/goalball-build @electron/packager@19.0.1 playwright@1.58.2
-XDG_CACHE_HOME=/tmp/goalball-cache ELECTRON_CACHE=/tmp/goalball-electron-cache /workspace/goalball-build/node_modules/.bin/electron-packager /workspace/goallball-game GoalballSonoro --platform=win32 --arch=x64 --electron-version=40.10.6 --out=/workspace/goalball-build/dist --overwrite --asar
+dotnet run --project native/Goalball.Tests/Goalball.Tests.csproj -c Release
+dotnet restore native/Goalball.Windows/Goalball.Windows.csproj -r win-x64 --locked-mode
+dotnet publish native/Goalball.Windows/Goalball.Windows.csproj -c Release -r win-x64 --self-contained true --no-restore -o dist/GoalballSonoro-Nativo
 ```
 
-Distribuye la carpeta entera `GoalballSonoro-win32-x64`, no solo el EXE.
-Electron verifica los checksums de sus descargas; no desactives esa verificación.
-Conserva las licencias incluidas por Electron. El paquete no está firmado.
-Pruebas del motor y Chromium realizadas en Linux; falta prueba en Windows real.
+La compilación cruzada funciona en Linux. La interfaz WinForms y NVDA solo
+se ejecutan en Windows. Los paquetes NuGet se fijan con packages.lock.json.
+Para Windows, conserva toda la carpeta publicada y copia LEEME.txt, LICENSE
+y SONIDOS-LICENCIA.txt. Incluye el cliente oficial usando
+`scripts/Install-NvdaClient.ps1` con OutputDirectory apuntando al publicado
+(y RUNNER_TEMP a una carpeta temporal). Ese script usa exclusivamente la
+distribución NVDA 2026.2 de NV Access, conserva LGPL y registra origen y hash.
+`GoalballSonoro.exe --verificar` carga la DLL, comprueba sus exportaciones,
+valida los WAV y escribe verificacion.txt. No exige NVDA abierto en CI.
+
+## Distribución
+
+Las etiquetas v2* activan la compilación, las pruebas en Windows, el diagnóstico
+del paquete y la publicación de Goalball-Nativo-Windows.zip en GitHub Releases.
+El cliente oficial se incorpora durante esa compilación, nunca desde mirrors.
+La fuente correspondiente de NVDA se enlaza en NVDA-CREDITOS.txt.
+No cambies ni desactives verificación de TLS durante la descarga.
+
+El juego se inicia con GoalballSonoro.exe y NVDA abierto. F2 comprueba la
+conexión. La partida se controla desde el teclado; Escape abre el menú nativo.
+Las pruebas de CI no sustituyen una prueba interactiva con NVDA real.

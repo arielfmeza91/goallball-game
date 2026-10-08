@@ -1,73 +1,74 @@
-GOALBALL SONORO 1.0 — WINDOWS 10 / 11, 64 BITS
+GOALBALL SONORO 2.0 — WINDOWS NATIVO + NVDA
 
 INICIAR
-Extrae TODO el ZIP en una carpeta. Abre GoalballSonoro.exe.
-No requiere instalación, Python, Node ni Internet para jugar.
-Conserva las carpetas y DLL junto al ejecutable.
-El programa no está firmado con un certificado comercial.
+Extrae TODO el ZIP y abre GoalballSonoro.exe con NVDA iniciado.
+Windows 10/11 de 64 bits. No requiere navegador, Electron, Python, Node
+ni instalar .NET. El runtime de .NET se incluye en la carpeta.
+Conserva las DLL, las carpetas y sonidos junto al EXE.
 
-CONTROLES
-Enter: empezar o continuar después del descanso.
-1 / 2 / 3: seleccionar uno de los tres defensores.
-Flechas izquierda / derecha: desplazamiento lateral.
-Espacio: bloquear si ataca el rival; lanzar si tienes el balón.
-A / D: apuntar a izquierda / derecha de la portería rival.
-Arriba / abajo: subir / bajar potencia.
-H: escuchar marcador, tiempo, posesión y defensor.
-M: activar antifaz; V: activar/desactivar voz; F1: ayuda hablada.
-P: pausa; T: tiempo muerto; S: sustitución.
-Para volver al juego después de usar un control con ratón, pulsa en la pista.
-Usa auriculares ESTÉREO. Tu izquierda es el canal izquierdo.
-Los sonidos del balón indican lado y distancia, no una dirección de movimiento.
-La narración usa las voces de Windows. Si falta español, instala una voz
-española desde Configuración > Hora e idioma > Voz. El sonido del juego
-no depende de esa voz. No hay reconocimiento de voz ni servicios en línea.
+NVDA
+Los menús son controles nativos de Windows, navegables con Tab y Enter.
+El partido envía las respuestas a tu NVDA con NVDA Controller Client oficial.
+Usa la voz, idioma y configuración que ya elegiste en NVDA.
+También envía los mensajes a la línea braille. No utiliza otra voz TTS.
+Abre NVDA antes del juego. F2 comprueba la conexión. Si lo abres después,
+el juego vuelve a comprobarla cada segundo. No instala ni modifica NVDA.
+Ejecuta juego y NVDA normalmente, sin cambiar sus privilegios.
+Los anuncios de juego pueden desactivarse con V; los menús siguen siendo
+accesibles con NVDA. No se envían mensajes en la pantalla segura de Windows.
 
-MODOS
-Partido: rival controlado por ordenador, dos mitades de doce minutos.
-Entrenamiento: cinco minutos para aprender a localizar y detener el balón.
-Antifaz: oculta la pista, conserva marcador y controles accesibles.
-Arbitraje: menú para experimentar con faltas que no se deducen de un teclado.
+CÓMO JUGAR
+Elige Nuevo partido o Entrenamiento en el menú nativo.
+En partido: 1 / 2 / 3 seleccionan defensor; flechas izquierda / derecha
+mueven lateralmente. Espacio lanza cuando tienes el balón, o bloquea
+cuando ataca el rival. A / D ajustan el destino del tiro; arriba / abajo
+ajustan potencia. Usa auriculares estéreo para localizar el cascabel.
+La coordenada cero es tu izquierda; nueve metros, tu derecha.
+H: marcador, tiempo, posición, puntería, potencia y posesión con NVDA.
+M: antifaz, oculta pista. V: activar/desactivar anuncios de partido.
+Escape o P: pausa y menú nativo. Tab y Enter: opciones del menú.
+F1: manual accesible, con texto seleccionable y navegación de NVDA.
+F2: comprobar NVDA. F11: pantalla completa / ventana.
+T: tiempo muerto. S: sustitución. Enter: continuar después del descanso.
+F5: arbitraje de entrenamiento, elige una falta y aplica el penalti.
+F6: alternar tiro legal, alto, largo y corto para practicar reglas.
+La pérdida de foco pausa el juego. Las opciones conservan la partida.
 
 REGLAS IMPLEMENTADAS
-Pista 18 x 9 m; zonas de equipo, lanzamiento y zona neutral, tres jugadores
-por equipo y portería de nueve metros. Física del balón bidimensional simplificada.
-Dos mitades de doce minutos efectivos. Descanso de tres minutos, que se
-puede saltar con Enter. El reloj se detiene en pausa, descansos, tiempos
-muertos y penaltis. Se pausa automáticamente al perder foco la ventana.
-Diez goles de diferencia terminan el partido.
-Empate: dos mitades de tres minutos, gol de oro; después tres lanzamientos
-extra por equipo, terminando cuando la ventaja sea insalvable. Si persiste
-el empate, parejas alternadas de lanzamientos a muerte súbita.
-Diez segundos de posesión; excederlos concede penalti al rival.
-Un defensor durante penalti y lanzamientos extra.
-Balón alto y largo: penaltis. Balón corto y fuera: cambio de posesión.
-En tiro legal rodado se consideran efectuados los contactos reglamentarios.
-Cuatro tiempos muertos de 45 segundos y cuatro sustituciones por partido;
-máximo tres por mitad. Uno adicional de cada tipo para toda la prórroga.
-Faltas manuales: antifaces, defensa ilegal, ruido, retraso personal/de equipo,
-conducta antideportiva e instrucciones ilegales del banquillo.
+Pista 18 x 9 m, tres jugadores por equipo, porterías de nueve metros.
+Dos mitades de doce minutos efectivos; descanso de tres minutos,
+que se puede saltar con Enter. Reloj detenido en pausa, descansos,
+tiempos muertos y penaltis. Diez goles de diferencia terminan el partido.
+Empate: dos mitades de tres minutos con gol de oro; después tres tiros
+extra por equipo. Ventaja insalvable termina la serie; si siguen empatados,
+parejas alternadas de tiros a muerte súbita.
+Diez segundos de posesión. Excederlos concede penalti al rival.
+Un defensor durante penalti y tiros extra. En penalti defiende el sancionado.
+Balón alto y largo: penalti. Balón corto y fuera: cambio de posesión.
+El tiro legal rodado presupone los contactos con suelo reglamentarios.
+Cuatro tiempos muertos de 45 segundos y cuatro sustituciones por partido,
+máximo tres por mitad; uno adicional de cada tipo para toda la prórroga.
+Antifaces, defensa ilegal, ruido, retraso personal/de equipo, conducta
+antideportiva e instrucciones ilegales se simulan mediante arbitraje manual.
 
-ALCANCE Y LIMITACIONES
-Es una primera versión de videojuego, NO una implementación completa ni
-certificada del reglamento IBSA. No se ha contrastado íntegramente con la
-edición vigente. No debe usarse para formación arbitral oficial.
-Los equipos tienen tres posiciones, pero no plantilla de seis jugadores;
-sustituir consume el cupo y conserva posiciones/habilidades. No hay lesiones,
-tiempos médicos, expulsiones, sanciones de competición, protesta arbitral,
-inspección de material, sorteo ni alineación nominal de lanzamientos extra.
-No se simulan el rebote de balón controlado hacia el campo contrario,
-ball-over, pases al exterior ni lanzamiento prematuro. No hay multijugador.
-Los contactos del balón se modelan en dos dimensiones: alto/largo/corto se
-seleccionan en el menú. El rival y los defensores no seleccionados tienen
-comportamiento simplificado. La identidad del defensor infractor en penalti
-no se fija: se permite elegir defensor con 1/2/3.
-Los efectos descargados son recursos de videojuegos a 44,1 kHz, no grabaciones
-profesionales de un balón oficial. El efecto de cascabel es una adaptación
-de coin.ogg. El silbato se sintetiza. No se promete audio deportivo realista.
-Las pruebas del motor y de interfaz se ejecutaron en Linux/Chromium; el
-paquete Windows se generó aquí, pero no se ejecutó en un Windows real.
+ALCANCE
+Interfaz nativa WinForms y dibujo GDI+; no usa HTML, webview ni Electron.
+El paquete fue compilado y sus DLL de NVDA y sonidos se verificaron
+mediante una ejecución de diagnóstico en Windows de GitHub Actions.
+Las pruebas automáticas del motor corren en Linux y Windows.
+No se ha comprobado una partida interactiva con NVDA abierto en un PC real.
+Es una versión de videojuego, no una implementación completa ni certificada
+del reglamento IBSA. No se ha contrastado toda la edición oficial vigente.
+Física 2D, rival y defensores no seleccionados simplificados. Sustituir
+consume el cupo y conserva habilidades/posiciones: no hay plantilla nominal.
+No hay lesiones, tiempos médicos, expulsiones, sanciones de competición,
+protestas, sorteo, inspección de material, ball-over, pases al exterior,
+lanzamiento prematuro ni multijugador. Alto/largo/corto se eligen con F6.
+El audio descargado son efectos CC0 a 44,1 kHz, no grabaciones deportivas
+profesionales. El cascabel usa coin.ogg; el silbato es síntesis original.
+El programa no está firmado con certificado comercial.
 
-CRÉDITOS Y LICENCIAS
-Consulta SONIDOS-LICENCIA.txt. El código del juego se entrega con licencia MIT.
-Incluye Electron y sus licencias originales en LICENSE y LICENSES.chromium.html.
+LICENCIAS
+Código MIT, efectos CC0: SONIDOS-LICENCIA.txt.
+NVDA Controller Client LGPL 2.1: NVDA-LGPL-2.1.txt y NVDA-CREDITOS.txt.
+La DLL es dinámica y se puede sustituir por otra versión x64 compatible.

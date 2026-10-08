@@ -1,7 +1,7 @@
-name: Juego para Windows
+name: Goalball nativo Windows y NVDA
 on:
   push:
-    tags: ['v*']
+    tags: ['v2*']
   workflow_dispatch:
 permissions:
   contents: write
@@ -10,29 +10,37 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-dotnet@v4
         with:
-          node-version: '24'
+          dotnet-version: '10.0.100'
       - name: Pruebas del motor
-        run: npm test
-      - name: Herramientas de empaquetado
-        run: npm install --prefix "$env:RUNNER_TEMP/goalball-tools" @electron/packager@19.0.1
-      - name: Crear juego portátil
+        run: dotnet run --project native/Goalball.Tests/Goalball.Tests.csproj -c Release
+      - name: Crear juego nativo portátil
         shell: pwsh
         run: |
-          & "$env:RUNNER_TEMP/goalball-tools/node_modules/.bin/electron-packager.cmd" . GoalballSonoro --platform=win32 --arch=x64 --electron-version=40.10.6 --out=dist --overwrite --asar
+          dotnet restore native/Goalball.Windows/Goalball.Windows.csproj -r win-x64 --locked-mode
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          Copy-Item LEEME.txt,SONIDOS-LICENCIA.txt dist/GoalballSonoro-win32-x64/
-          Compress-Archive -Path dist/GoalballSonoro-win32-x64 -DestinationPath Goalball-Windows.zip
+          dotnet publish native/Goalball.Windows/Goalball.Windows.csproj -c Release -r win-x64 --self-contained true --no-restore -o dist/GoalballSonoro-Nativo
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Copy-Item LEEME.txt,LICENSE,SONIDOS-LICENCIA.txt dist/GoalballSonoro-Nativo/
+          Copy-Item native/NAUDIO-LICENCIA.txt dist/GoalballSonoro-Nativo/
+      - name: Incluir cliente oficial de NVDA y verificar
+        shell: pwsh
+        run: |
+          ./scripts/Install-NvdaClient.ps1 -OutputDirectory dist/GoalballSonoro-Nativo
+          & dist/GoalballSonoro-Nativo/GoalballSonoro.exe --verificar
+          if ($LASTEXITCODE -ne 0) { Get-Content dist/GoalballSonoro-Nativo/verificacion.txt; exit $LASTEXITCODE }
+          Get-Content dist/GoalballSonoro-Nativo/verificacion.txt
+          Compress-Archive -Path dist/GoalballSonoro-Nativo -DestinationPath Goalball-Nativo-Windows.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: Goalball-Windows
-          path: Goalball-Windows.zip
+          name: Goalball-Nativo-Windows
+          path: Goalball-Nativo-Windows.zip
       - name: Publicar descarga al crear versión
         if: startsWith(github.ref, 'refs/tags/')
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$env:GITHUB_REF_NAME" Goalball-Windows.zip --title "Goalball Sonoro $env:GITHUB_REF_NAME" --notes "Primera versión jugable. Consulta LEEME.txt para controles, reglas implementadas y limitaciones."
+          gh release create "$env:GITHUB_REF_NAME" Goalball-Nativo-Windows.zip --title "Goalball nativo y NVDA $env:GITHUB_REF_NAME" --notes "Aplicación nativa WinForms para Windows. Anuncios con NVDA Controller Client oficial. Extrae todo el ZIP y abre GoalballSonoro.exe con NVDA iniciado. Consulta LEEME.txt para controles, alcance y limitaciones."
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

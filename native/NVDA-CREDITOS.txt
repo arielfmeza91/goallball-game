@@ -1,0 +1,12 @@
+NVDA Controller Client, NV Access Limited y colaboradores.
+Biblioteca dinámica original, distribuida sin modificaciones.
+Licencia: GNU Lesser General Public License 2.1; ver NVDA-LGPL-2.1.txt.
+Puedes sustituir nvdaControllerClient.dll por una versión compatible x64.
+Origen oficial: https://download.nvaccess.org/releases/2026.2/
+Código fuente correspondiente, instrucciones de compilación y licencia:
+https://github.com/nvaccess/nvda/tree/release-2026.2
+Archivo de fuente original:
+https://github.com/nvaccess/nvda/archive/refs/tags/release-2026.2.zip
+Compilación del cliente: scons source client (ver documentación de NVDA).
+El juego comunica texto y braille mediante nvdaController_speakText y
+nvdaController_brailleMessage. No instala ni modifica NVDA.

@@ -17,3 +17,8 @@ sounds/fall.ogg -> assets/goal.ogg
 El tono, volumen y paneo se adaptan en reproducción; archivos sin modificar.
 
 Silbato: síntesis original mediante Web Audio; sin recurso descargado.
+
+Versión nativa 2.0: conversión a WAV PCM estéreo de 16 bits, 44,1 kHz
+mediante ffmpeg. throw.wav contiene los primeros 0,3 segundos del original.
+whistle.wav: síntesis original del silbato. Se reproducen y mezclan mediante
+NAudio 2.2.1 (MIT), sin descargar efectos durante el juego.
